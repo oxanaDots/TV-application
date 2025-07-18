@@ -1,49 +1,95 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+// App.js
+
+import { createStackNavigator } from '@react-navigation/stack';
+import EnterCodeScreen from '../EnterCodeScreen';
+import GalleryScreen from '../GalleryScreen';
+import LogIn from '../LogIn';
 import { useEffect } from 'react';
-import {
-  configureReanimatedLogger,
-  ReanimatedLogLevel,
-} from 'react-native-reanimated';
+import { writeToDir } from '../utility_functions/writeToDir';
+import * as FileSystem from 'expo-file-system'
+import { Platform } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Stack = createStackNavigator();
+const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
+const IMAGES_DIR = `${DIRECTORY}/images`
+const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
 
-// Disable reanimated warnings
-configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
-  strict: false,
-});
+export default function App() {
+  const isTV = Platform.isTV;
+  console.log('Is TV:', isTV);
+ useEffect(() => {
+    async function helper() {
+      try {
+          await FileSystem.makeDirectoryAsync(DIRECTORY, { intermediates: true });
+          await FileSystem.makeDirectoryAsync(IMAGES_DIR, { intermediates: true });
+     
+        const files = await FileSystem.readDirectoryAsync(DIRECTORY);
+        const images = await FileSystem.readDirectoryAsync(IMAGES_DIR);
+          const detailsDir = await FileSystem.getInfoAsync(EXHIBITION_DETAILS_FILE)
+     
+       
+        if (files.length !== 0 ) {
+          console.log('Directory is empty. Fetch images first.');
+          await writeToDir(IMAGES_DIR, EXHIBITION_DETAILS_FILE);
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+        } else {
+          console.log('Directory has images. No need to fetch.');
+        }
 
-  useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
-      if (error) {
-        console.warn(`Error in loading fonts: ${error}`);
+       
+
+ console.log('Files in directory:', files);
+
+      } catch (error) {
+        console.error('Error during setup:', error);
       }
     }
-  }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
+
+    helper();
+  }, []);
+
+
+//   useEffect(()=>{
+//     async function clearDirectory(directoryPath) {
+//   try {
+//     // 1. Get all items inside the directory
+//     const items = await FileSystem.readDirectoryAsync(directoryPath);
+//     console.log('Found items:', items);
+
+//     // 2. Delete each item
+//     await Promise.all(
+//       items.map(async (item) => {
+//         const itemPath = `${directoryPath}/${item}`;
+//         await FileSystem.deleteAsync(itemPath, { idempotent: true });
+//       })
+//     );
+
+//     console.log('Directory contents deleted!');
+//   } catch (error) {
+//     console.error('Error clearing directory:', error);
+//   }
+// }
+// // clearDirectory(DIRECTORY)
+//   }, [])
+
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+      <Stack.Navigator 
+        initialRouteName="Log In"
+        screenOptions={{
+          headerShown: !isTV,            // Hide headers on TV
+          gestureEnabled: !isTV,         // Disable swipe gestures on TV
+          cardStyle: {
+            backgroundColor: isTV ? '#000' : '#fff',  // TV-friendly dark background
+          },
+        }}>
+        <Stack.Screen name="Log In" component={LogIn} />
+        <Stack.Screen name="Enter Code" component={EnterCodeScreen} />
+        <Stack.Screen name="Gallery" component={GalleryScreen} />
+      </Stack.Navigator>
   );
 }
+
+

@@ -22,14 +22,12 @@
     ],
     "android": {
       "edgeToEdgeEnabled": true,
-      "splash": {
-        "image": "./assets/images/splash.png"
-      }
+     
+      "package": "com.okssana.ExhibitionTV"
     },
     "ios": {
-      "splash": {
-        "image": "./assets/images/splash.png"
-      }
+     
+      "bundleIdentifier": "com.okssana.ExhibitionTV"
     },
     "web": {
       "bundler": "metro",
