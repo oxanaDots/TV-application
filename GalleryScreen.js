@@ -71,13 +71,22 @@ import { fetchFromDir } from './utility_functions/fetchFromDir';
 
 
 <View style={styles.textCont}>
-<View style={styles.textNameCont}>
-   <Text>{details.artistFirstName} {details.artistLastName}</Text>
 
+  <View style={{display:'flex'}}>
+<View style={styles.textNameCont}>
+   <Text style={{fontWeight:'800'}}>{details.artistFirstName} {details.artistLastName}</Text>
 </View>
-<Text>{details.title}</Text>
+<Text style={{fontWeight:'800', fontStyle:'italic'}}>{details.title}</Text>
 <Text>{details.medium}</Text>
+</View>
+
+
 <Text>{details.descr}</Text>
+<View>
+  {details.links?.map((link, index) => (
+    <Text key={index}>{link}</Text>
+  ))}
+</View>
 
 </View>
 
@@ -143,9 +152,8 @@ const styles= StyleSheet.create({
   },
 
   mainDisplayCont:{
-    justifyContent:'center',
   flexDirection:'row',
-    alignItems:'center',
+ 
      display:'flex',
      width: '100%',
      height: '100%'
@@ -156,22 +164,21 @@ const styles= StyleSheet.create({
 flexDirection:'column',
      backgroundColor: 'rgb(244, 244, 245)',
  alignItems:'center',
- 
+ justifyContent:'space-between',
+flex:1
 
 
   },
 
   imagesDisplayCont:{
-     width: '100%'
-   
+  
+     width: '100%',
+    height:'auto'
   },
   image:{
-            
-      width:'100%',             
+  
+      width:'80%',             
     height: '100%',             
-    
-
-   
  
   },
   cont:{
@@ -187,8 +194,10 @@ flexDirection:'column',
   },
   textCont:{
     display: 'flex',
- 
-    justifyContent:"center",
-    alignItems:'center'
+ display:'row',
+ width:'30%',
+    justifyContent:'space-between',
+    paddingVertical: 10
+   
   }
 })

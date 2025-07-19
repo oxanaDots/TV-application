@@ -52,7 +52,7 @@ export default function App() {
 
 
 //   useEffect(()=>{
-//     async function clearDirectory(directoryPath) {
+//     async function clearDirectory(directoryPath: string) {
 //   try {
 //     // 1. Get all items inside the directory
 //     const items = await FileSystem.readDirectoryAsync(directoryPath);
@@ -71,7 +71,7 @@ export default function App() {
 //     console.error('Error clearing directory:', error);
 //   }
 // }
-// // clearDirectory(DIRECTORY)
+// clearDirectory(DIRECTORY)
 //   }, [])
 
 

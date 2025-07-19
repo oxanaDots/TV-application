@@ -31,6 +31,7 @@ const exhibitionDetails = {
      title: data.title,
      medium: data.medium,
      descr: data.descr,
+     links: data.links
 
      
 }
