@@ -1,7 +1,6 @@
 // App.js
 
 import { createStackNavigator } from '@react-navigation/stack';
-import EnterCodeScreen from '../EnterCodeScreen';
 import GalleryScreen from '../GalleryScreen';
 import LogIn from '../LogIn';
 import { useEffect } from 'react';
@@ -86,7 +85,6 @@ export default function App() {
           },
         }}>
         <Stack.Screen name="Log In" component={LogIn} />
-        <Stack.Screen name="Enter Code" component={EnterCodeScreen} />
         <Stack.Screen name="Gallery" component={GalleryScreen} />
       </Stack.Navigator>
   );

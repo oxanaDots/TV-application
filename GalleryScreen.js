@@ -3,27 +3,42 @@ import { useState } from 'react';
 import Swiper from 'react-native-swiper';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
-
-import { collection, getDocs } from 'firebase/firestore';
-import { getStorage, ref, getDownloadURL } from 'firebase/storage';
-import { db } from './firebase';
-import * as FileSystem from 'expo-file-system';
 import { fetchFromDir } from './utility_functions/fetchFromDir';
+import { getAuth } from 'firebase/auth';
+import { updateDoc, doc } from 'firebase/firestore';
+import { db } from './firebase';
+
+function GalleryScreen() {
+const currentUser = getAuth().currentUser
+
+const [images, setImages] = useState([]);
+const[details, setDetails] = useState({})
+console.log('CURENT user',currentUser)
 
 
- function GalleryScreen() {
-
-      const [images, setImages] = useState([]);
-     const[details, setDetails] = useState({})
-
-  const handleFetch = async () => {
-  const fetched = await fetchFromDir();
+async function handleFetch ()  {
+  //update businessDoc
+try{
+   const fetched = await fetchFromDir();
   console.log(fetched)
   if (fetched) {
     setImages(fetched.images);
      console.log('detailss',fetched.details)
     setDetails(fetched.details)
   }
+
+    const businessRef = doc(db, 'businesses', currentUser.uid);
+    if(businessRef){
+      console.log('businessref 🔑', businessRef)
+
+    } else{
+      console.error(error)
+    }
+  await updateDoc(businessRef, { currentlyDisplaying: true });
+}catch(err){
+console.error(err)
+}
+ 
 
 };
 

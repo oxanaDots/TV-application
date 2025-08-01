@@ -40,7 +40,7 @@ const windowH = Dimensions.get('window').height
     const userDoc = await getDoc(doc(db, 'businesses', uid));
 
     if (userDoc.exists() && userDoc.data().role === 'business') {
-      navigation.navigate('Enter Code');
+      navigation.navigate('Gallery');
     } else {
       setErrorMessage('Access denied. Only business accounts are allowed.');
     }
