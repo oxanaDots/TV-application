@@ -60,11 +60,9 @@ describe('',()=>{
     it ('Navigates to Gallery on successfull login', async()=>{
 
 
-                try {
+                
             render(<GalleryScreen />);
-            } catch (e) {
-            console.error('GalleryScreen threw:', e);
-            }
+          
 
 
         const galleryCont = await screen.findByTestId('display-cont');
