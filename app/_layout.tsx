@@ -1,5 +1,4 @@
 // App.js
-
 import { createStackNavigator } from '@react-navigation/stack';
 import GalleryScreen from '../GalleryScreen';
 import LogIn from '../LogIn';
@@ -78,10 +77,10 @@ export default function App() {
       <Stack.Navigator 
         initialRouteName="Log In"
         screenOptions={{
-          headerShown: !isTV,            // Hide headers on TV
-          gestureEnabled: !isTV,         // Disable swipe gestures on TV
+          headerShown: !isTV, 
+          gestureEnabled: !isTV, 
           cardStyle: {
-            backgroundColor: isTV ? '#000' : '#fff',  // TV-friendly dark background
+            backgroundColor: isTV ? '#000' : '#fff',
           },
         }}>
         <Stack.Screen name="Log In" component={LogIn} />

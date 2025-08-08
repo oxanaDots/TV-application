@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
@@ -17,11 +17,15 @@ const windowH = Dimensions.get('window').height
     const [errorMessage, setErrorMessage] = useState('')
     const navigation = useNavigation();
 
+    
+
     function handleChnage(name, value){
        
         setLoginDetails((details)=>( {...details, [name]: value}))
         setErrorMessage('')
+        
     }
+
 
 
     async function handleLogIn(){
@@ -34,17 +38,21 @@ const windowH = Dimensions.get('window').height
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const uid = userCredential.user.uid;
 
-    // Get user data from Firestore
+    const uid = userCredential.user.uid;
+
     const userDoc = await getDoc(doc(db, 'businesses', uid));
 
+    // login is only allowed to enterprises
     if (userDoc.exists() && userDoc.data().role === 'business') {
       navigation.navigate('Gallery');
+
+      
+
     } else {
       setErrorMessage('Access denied. Only business accounts are allowed.');
     }
-    // console.log(' Logged in user:', userCredential.user.uid);
+   
      
     
   } catch (error) {
@@ -93,7 +101,7 @@ const windowH = Dimensions.get('window').height
         secureTextEntry={true}
 
        />
-        <TouchableOpacity onPress={()=>handleLogIn()} style={styles.button}>
+        <TouchableOpacity testID="submit-btn"   onPress={()=>handleLogIn()} style={styles.button}>
     <Text style={styles.buttonTxt}>Log In</Text>
    </TouchableOpacity>
    </View>

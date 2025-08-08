@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+
 import { useState } from 'react';
 import Swiper from 'react-native-swiper';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -13,60 +14,81 @@ const currentUser = getAuth().currentUser
 
 const [images, setImages] = useState([]);
 const[details, setDetails] = useState({})
-console.log('CURENT user',currentUser)
+const [hasImages, setHasImages] = useState(false)
+const [displaying, setDisplaying] = useState(false)
 
 
+
+
+useEffect(()=>{
 async function handleFetch ()  {
   //update businessDoc
 try{
    const fetched = await fetchFromDir();
   console.log(fetched)
-  if (fetched) {
-    setImages(fetched.images);
-     console.log('detailss',fetched.details)
-    setDetails(fetched.details)
+  if (fetched ) {
+    setHasImages(true)
   }
 
-    const businessRef = doc(db, 'businesses', currentUser.uid);
-    if(businessRef){
-      console.log('businessref 🔑', businessRef)
-
-    } else{
-      console.error(error)
-    }
-  await updateDoc(businessRef, { currentlyDisplaying: true });
+  
 }catch(err){
 console.error(err)
 }
- 
-
 };
 
+handleFetch()
+}, [])
+console.log(details)
  useEffect(() => {
   console.log('Images updated:', images);
   console.log('details',details)
 }, [images]);
 
-
-  return (
-    <View style={styles.displayCont}>
-
-   {images.length === 0 &&
+  async function onClick(){
+    const fetched = await fetchFromDir()
+    if (fetched){
+     setImages(fetched.images);
   
-   <View style={styles.cont}>
+     console.log('detailss',fetched.details)
+    setDetails(fetched.details)
+    setDisplaying(true)
+    }
+     const businessRef = doc(db, 'businesses', currentUser.uid);
+    await updateDoc(businessRef, { currentlyDisplaying: true });
+}
 
+
+//  useEffect(() => {
+//   console.log('Images updated:', images);
+//   console.log('details',details)
+// }, [images]);
+
+console.log('Dsplaying', displaying)
+console.log('HAsImages', hasImages)
+  return (
+    <View testID='display-cont' style={styles.displayCont}>
+
+   
+ { !hasImages && 
+ <View style={styles.cont}>
+        <Text>Nothing to show</Text>
+ </View>}
+
+{ !displaying  && hasImages&&
+
+  <View style={styles.cont}>
     <View style={styles.textCont}>
-    <Text style={styles.mainHeader}>Current artist: Name Surname</Text>
      </View>
-<View style={styles.buttonCont}>
-       <TouchableOpacity style={styles.displayButton} onPress={()=>handleFetch()}>
+      <View style={styles.buttonCont}>
+       <TouchableOpacity  testID='disply-btn' style={styles.displayButton} onPress={()=>onClick()}>
         <Text style={styles.buttonText}>Start Displaying</Text>
       </TouchableOpacity>
     </View>
    </View>
-    }
+}
 
- {images.length > 0 && <View  style={styles.mainDisplayCont} >
+{displaying  && hasImages&&
+ <View  style={styles.mainDisplayCont} >
  
  <Swiper
   autoplay={true}
@@ -105,9 +127,8 @@ console.error(err)
 
 </View>
 
-</View>
-  
-  }
+</View>}
+
    </View>
   );
 }

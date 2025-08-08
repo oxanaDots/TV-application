@@ -21,6 +21,7 @@ const currentDay = Timestamp.fromDate(new Date());
    if (currentExhibition === 0){
     return
    } else{
+    console.log('current exh', currentExhibition)
       return currentExhibition[0]
    }
 

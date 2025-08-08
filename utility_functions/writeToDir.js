@@ -1,5 +1,6 @@
 import * as FileSystem from 'expo-file-system';
 import { fetchExhibitionMaterial } from './fetchExhibitionMaterial';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
  const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
 const IMAGES_DIR = DIRECTORY+'/images'
@@ -14,13 +15,15 @@ try{
 
 
 const data =  await fetchExhibitionMaterial()
+console.log('currentEXH', data)
 
  if(dirFiles.length === 0){
    const images = data.images
    await Promise.all(
-    images.map((url, index)=>{
-        const path = `${IMAGES_DIR}/artwork_${index}`
-        return FileSystem.downloadAsync(url, path)
+    images.map(async (url, index)=>{
+     const path = `${IMAGES_DIR}/artwork_${index}`
+        const imageLink = await getDownloadURL(ref(getStorage(), url))
+        return FileSystem.downloadAsync(imageLink, path)
     })
 )
  } 
