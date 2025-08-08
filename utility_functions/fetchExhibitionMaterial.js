@@ -18,10 +18,10 @@ const currentDay = Timestamp.fromDate(new Date());
           const currentExhibitionSnapShot = await getDocs(querry)
           const currentExhibition = currentExhibitionSnapShot.docs.map(doc => ({...doc.data(), docId: doc.id}))
 
-   if (currentExhibition === 0){
-    return
+   if (currentExhibition.length === 0){
+    return null
    } else{
-    console.log('current exh', currentExhibition)
+ 
       return currentExhibition[0]
    }
 

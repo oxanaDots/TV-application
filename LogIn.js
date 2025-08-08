@@ -58,22 +58,6 @@ const windowH = Dimensions.get('window').height
   } catch (error) {
     console.error('Login error:', error.message);
   
-       switch (error.code) {
-      case 'auth/invalid-email':
-        setErrorMessage('The email address is not valid.');
-        break;
-      case 'auth/user-not-found':
-        setErrorMessage('No user found with this email.');
-        break;
-      case 'auth/wrong-password':
-        setErrorMessage('Incorrect password.');
-        break;
-      case 'auth/too-many-requests':
-        setErrorMessage('Too many login attempts. Please try again later.');
-        break;
-      default:
-        setErrorMessage('Login failed. Please try again.');
-    }
   }
 
     }
@@ -86,7 +70,7 @@ const windowH = Dimensions.get('window').height
        <View style={styles.container}>
 
        <Text style={styles.mainHeader}>Log In</Text>
-       {errorMessage !== '' && <Text style={styles.errormessage}>{errorMessage}</Text>}
+       {errorMessage !== '' && <Text testID='error-message' style={styles.errormessage}>{errorMessage}</Text>}
        <TextInput
        style={styles.textInput}
        placeholder='email'

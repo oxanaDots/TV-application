@@ -1,6 +1,16 @@
 jest.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: jest.fn()}))
 
+  jest.mock('../GalleryScreen', () => {
+  const { View, Text } = require('react-native');
+  return function Mock() {
+    return (
+      <View testID="display-cont">
+        <Text>Gallery </Text>
+      </View>
+    );
+  };
+});
 
 jest.mock('firebase/firestore', ()=>({
     getDoc: jest.fn(),
@@ -13,6 +23,7 @@ jest.mock('../firebase', ()=>({
 }))
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import act from '@testing-library/react-native';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -22,6 +33,24 @@ import LogIn from '../LogIn'
 import GalleryScreen from '../GalleryScreen'
 
 const Stack = createStackNavigator();
+
+
+  function  helper(){
+ render (
+   <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Log In" component={LogIn} />
+        <Stack.Screen name="Gallery" component={GalleryScreen} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
+        )
+
+        const email = screen.getByPlaceholderText(/email/i);
+        const password = screen.getByPlaceholderText(/password/i);
+        const submitBtn = screen.getByTestId('submit-btn')
+        return {email, password, submitBtn}
+}
 
 describe('',()=>{
 
@@ -53,26 +82,28 @@ describe('',()=>{
     it ('Navigates to Gallery on successfull login', async()=>{
 
 
-    render (
-   <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Log In" component={LogIn} />
-        <Stack.Screen name="Gallery" component={GalleryScreen} />
-
-      </Stack.Navigator>
-    </NavigationContainer>
-        )
-
-        const email = screen.getByPlaceholderText(/email/i);
-        const password = screen.getByPlaceholderText(/password/i);
-        const submitBtn = screen.getByTestId('submit-btn')
+       const {email, password, submitBtn} = helper()
         fireEvent.changeText(email, 'business1_test@mail.com');
-        fireEvent.changeText(password, '123');
-        fireEvent.press(submitBtn)
+        fireEvent.changeText(password, '123')
+
+       fireEvent.press(submitBtn)
+
         
         const galleryCont = await screen.findByTestId('display-cont');
 
-        // expect(galleryCont).toBeTruthy();
+        expect(galleryCont).toBeTruthy();
 
     })
+   it('shows error when fields are empty', async () => {
+  const { email, password, submitBtn } =  helper();
+
+  fireEvent.changeText(email, '');
+  fireEvent.changeText(password, '');
+
+
+      fireEvent.press(submitBtn)
+
+
+  await screen.findByText('Please enter both email and password');
+});
 })

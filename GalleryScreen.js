@@ -29,8 +29,6 @@ try{
   if (fetched ) {
     setHasImages(true)
   }
-
-  
 }catch(err){
 console.error(err)
 }
@@ -38,6 +36,8 @@ console.error(err)
 
 handleFetch()
 }, [])
+
+
 console.log(details)
  useEffect(() => {
   console.log('Images updated:', images);
