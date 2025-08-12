@@ -25,7 +25,7 @@ const data =  await fetchExhibitionMaterial()
    const images = data.images
    await Promise.all(
     images.map(async (url, index)=>{
-     const path = `${IMAGES_DIR}/image_${index}`
+     const path = `${IMAGES_DIR}/image_${index}.jpg`
         const imageLink = await getDownloadURL(ref(getStorage(), url))
         return FileSystem.downloadAsync(imageLink, path)
     })

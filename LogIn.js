@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { useNavigation } from '@react-navigation/native';
+import * as FileSystem from 'expo-file-system'
+import {writeToDir} from './utility_functions/writeToDir'
 
-function LogIn() {
 
-const windowW= Dimensions.get('window').width
-const windowH = Dimensions.get('window').height
+ const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
+ const IMAGES_DIR = `${DIRECTORY}/images`
+ const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`
+ const  todaysDate = new Date()
+
+   function LogIn() {
+
+    const windowW= Dimensions.get('window').width
+    const windowH = Dimensions.get('window').height
     const [loginDetails, setLoginDetails] = useState({
         email:'',
         password:''
     })
-
+    const [userLogedIn, setUserLogedIn] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const navigation = useNavigation();
 
@@ -40,6 +48,7 @@ const windowH = Dimensions.get('window').height
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
     const uid = userCredential.user.uid;
+    uid && setUserLogedIn(true)
 
     const userDoc = await getDoc(doc(db, 'businesses', uid));
 
@@ -52,17 +61,20 @@ const windowH = Dimensions.get('window').height
     } else {
       setErrorMessage('Access denied. Only business accounts are allowed.');
     }
-   
-     
     
   } catch (error) {
     console.error('Login error:', error.message);
   
-  }
+  }}
 
-    }
 
-  
+
+
+
+
+ 
+
+  console.log('Is user logeed in?', userLogedIn)
 
   return (
     <View style={[styles.mainCont, {width:windowW, height:windowH}]}>
