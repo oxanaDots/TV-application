@@ -7,6 +7,7 @@ import { writeToDir } from '../utility_functions/writeToDir';
 import * as FileSystem from 'expo-file-system'
 import { Platform } from 'react-native';
 
+
 const Stack = createStackNavigator();
 const [ cleared, setCleared] = useState(false)
 // 
@@ -84,28 +85,28 @@ const detailsDir = await FileSystem.getInfoAsync(EXHIBITION_DETAILS_FILE)
   }, []);
 
 
-//   useEffect(()=>{
-//     async function clearDirectory(directoryPath: string) {
-//   try {
-//     // 1. Get all items inside the directory
-//     const items = await FileSystem.readDirectoryAsync(directoryPath);
-//     console.log('Found items:', items);
+  useEffect(()=>{
+    async function clearDirectory(directoryPath: string) {
+  try {
+    // 1. Get all items inside the directory
+    const items = await FileSystem.readDirectoryAsync(directoryPath);
+    console.log('Found items:', items);
 
-//     // 2. Delete each item
-//     await Promise.all(
-//       items.map(async (item) => {
-//         const itemPath = `${directoryPath}/${item}`;
-//         await FileSystem.deleteAsync(itemPath, { idempotent: true });
-//       })
-//     );
+    // 2. Delete each item
+    await Promise.all(
+      items.map(async (item) => {
+        const itemPath = `${directoryPath}/${item}`;
+        await FileSystem.deleteAsync(itemPath, { idempotent: true });
+      })
+    );
 
-//     console.log('Directory contents deleted!');
-//   } catch (error) {
-//     console.error('Error clearing directory:', error);
-//   }
-// }
-// // clearDirectory(DIRECTORY)
-//   }, [])
+    console.log('Directory contents deleted!');
+  } catch (error) {
+    console.error('Error clearing directory:', error);
+  }
+}
+// clearDirectory(DIRECTORY)
+  }, [])
 
 
   return (

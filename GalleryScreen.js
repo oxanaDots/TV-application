@@ -5,9 +5,10 @@ import Swiper from 'react-native-swiper';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Image } from 'expo-image';
 import { fetchFromDir } from './utility_functions/fetchFromDir';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signOut } from 'firebase/auth';
 import { updateDoc, doc } from 'firebase/firestore';
-import { db } from './firebase';
+import { db, auth } from './firebase';
+import QRCode from 'react-native-qrcode-svg';
 
 function GalleryScreen() {
 const currentUser = getAuth().currentUser
@@ -58,10 +59,15 @@ console.log(details)
 }
 
 
-//  useEffect(() => {
-//   console.log('Images updated:', images);
-//   console.log('details',details)
-// }, [images]);
+async function onclose(){
+  try{
+    //  const businessRef = doc(db, 'businesses', currentUser.uid);
+    // await updateDoc(businessRef, { currentlyDisplaying: false });
+     await signOut(auth);  
+  } catch(err){
+    console.error(err)
+  }
+}
 
 console.log('Dsplaying', displaying)
 console.log('HAsImages', hasImages)
@@ -71,7 +77,8 @@ console.log('HAsImages', hasImages)
    
  { !hasImages && 
  <View style={styles.cont}>
-        <Text>Nothing to show</Text>
+        <Text style={{fontWeight:'800', fontSize: 20, paddingVertical: 10}}>No exhibitions to show </Text>
+         <Text>Come back later</Text>
  </View>}
 
 { !displaying  && hasImages&&
@@ -89,7 +96,7 @@ console.log('HAsImages', hasImages)
 
 {displaying  && hasImages&&
  <View  style={styles.mainDisplayCont} >
- 
+
  <Swiper
   autoplay={true}
   
@@ -108,7 +115,20 @@ console.log('HAsImages', hasImages)
 
 
 <View style={styles.textCont}>
-
+  <View  style={{display:'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+     paddingHorizontal: 10}}>
+ <QRCode
+        value="https://final-project-red-delta.vercel.app/"
+        size={50}
+        backgroundColor="white"
+        color="black"
+        />
+        <TouchableOpacity onPress={()=>onclose()} >
+          <Text stype={{fontSize: 100, paddingHorizontal: 10}}>close</Text>
+        </TouchableOpacity>
+        </View>
   <View style={{display:'flex'}}>
 <View style={styles.textNameCont}>
    <Text style={{fontWeight:'800'}}>{details.artistFirstName} {details.artistLastName}</Text>
@@ -124,6 +144,7 @@ console.log('HAsImages', hasImages)
     <Text key={index}>{link}</Text>
   ))}
 </View>
+
 
 </View>
 
@@ -153,9 +174,9 @@ const styles= StyleSheet.create({
   cont:{
    flexDirection:'column',
       display:'flex',
-     justifyContent:'space-between',
+   
     gap:10,
-    
+    paddingVertical: 30
   },
 
   mainHeader:{
@@ -200,7 +221,7 @@ const styles= StyleSheet.create({
 flexDirection:'column',
      backgroundColor: 'rgb(244, 244, 245)',
  alignItems:'center',
- justifyContent:'space-between',
+ justifyContent:'center',
 flex:1
 
 
@@ -213,7 +234,7 @@ flex:1
   },
   image:{
   
-      width:'80%',             
+      width:'95%',             
     height: '100%',             
  
   },
@@ -235,5 +256,8 @@ flex:1
     justifyContent:'space-between',
     paddingVertical: 10
    
+  },
+  qrCodeCont:{
+ paddingVertical: 20
   }
 })
