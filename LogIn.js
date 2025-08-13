@@ -5,7 +5,6 @@ import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { useNavigation } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system'
-import {writeToDir} from './utility_functions/writeToDir'
 
 
  const DIRECTORY = FileSystem.documentDirectory + 'exhibition'

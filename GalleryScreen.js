@@ -36,13 +36,15 @@ const [cleared, setCleared] = useState(false)
   
   const directory = await FileSystem.readDirectoryAsync(DIRECTORY);
   const detailsDir = await FileSystem.getInfoAsync(EXHIBITION_DETAILS_FILE)
-  
+  console.log('Details Directory', detailsDir)
       // CHECK IF CURRENT EXHIBITION HAS EXPIRED
         //  this condition means that the contents of the main directory, images and details json file, contain files and exhibition details of a current exhibition
     if(directory.length !== 0 && detailsDir.exists ){
     
             const link = detailsDir["uri"]
+            console.log('link', link)
             const text = await FileSystem.readAsStringAsync(link);
+            console.log('text', text)
             const parsed = JSON.parse(text);   
             const currentExhibitionExpireDate = parsed.expireAt
          // check if expire date of a current exhibition equals to today's date, if so, it has expired and contend of the main directory are deleted
@@ -126,12 +128,11 @@ console.log(details)
   console.log('details',details)
 }, [images]);
 
+// fetch exhibition material from the filesystem and add current busienss to the list of currently displaying locations
   async function onClick(){
     const fetched = await fetchFromDir()
     if (fetched){
      setImages(fetched.images);
-  
-     console.log('detailss',fetched.details)
     setDetails(fetched.details)
     setDisplaying(true)
     }
@@ -210,7 +211,7 @@ console.log('HAsImages', hasImages)
         backgroundColor="white"
         color="black"
         />
-        <TouchableOpacity onPress={()=>onclose()} >
+        <TouchableOpacity  testID="close-btn" onPress={()=>onclose()} >
           <Text style={{fontSize: 25, paddingHorizontal: 10}}>&times;</Text>
         </TouchableOpacity>
         </View>

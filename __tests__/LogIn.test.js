@@ -12,15 +12,34 @@ jest.mock('firebase/auth', () => ({
   };
 });
 
+jest.mock('')
 jest.mock('firebase/firestore', ()=>({
     getDoc: jest.fn(),
-    doc: jest.fn()
+    doc: jest.fn(),
+    storage: jest.fn(),
+    ref: jest.fn(),
 
 }))
 jest.mock('../firebase', ()=>({
     auth: jest.fn(),
     db: jest.fn()
 }))
+
+jest.mock('expo-file-system', () => ({
+    downloadAsync: jest.fn(),
+    getInfoAsync: jest.fn(),
+    readAsStringAsync: jest.fn(),
+    writeAsStringAsync: jest.fn(),
+    deleteAsync: jest.fn(),
+    moveAsync: jest.fn(),
+    copyAsync: jest.fn(),
+    makeDirectoryAsync: jest.fn(),
+    readDirectoryAsync: jest.fn(),
+    createDownloadResumable: jest.fn(),
+    documentDirectory: 'file:///mock/'
+    
+}));
+
 import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import act from '@testing-library/react-native';
@@ -31,6 +50,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LogIn from '../LogIn'
 import GalleryScreen from '../GalleryScreen'
+import * as FileSystem from 'expo-file-system'
 
 const Stack = createStackNavigator();
 
@@ -101,7 +121,7 @@ describe('',()=>{
   fireEvent.changeText(password, '');
 
 
-      fireEvent.press(submitBtn)
+   fireEvent.press(submitBtn)
 
 
   await screen.findByText('Please enter both email and password');
