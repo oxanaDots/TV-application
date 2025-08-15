@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, getIdTokenResult } from 'firebase/auth';
 import { getDoc, doc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { useNavigation } from '@react-navigation/native';
@@ -47,12 +47,16 @@ import * as FileSystem from 'expo-file-system'
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
     const uid = userCredential.user.uid;
+    const tokenResult = await getIdTokenResult(userCredential.user, /* forceRefresh */ true);
+
+const isArtist = tokenResult.claims.business === true;
+    console.log('user custom claimsu', isArtist)
     uid && setUserLogedIn(true)
 
     const userDoc = await getDoc(doc(db, 'businesses', uid));
 
     // login is only allowed to enterprises
-    if (userDoc.exists() && userDoc.data().role === 'business') {
+    if (userDoc.exists() && userDoc.data().role === 'business' && userCredential.user.emailVerified) {
       navigation.navigate('Gallery');
 
       

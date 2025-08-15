@@ -16,7 +16,8 @@ import { writeToDir } from './utility_functions/writeToDir';
  const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
  const IMAGES_DIR = `${DIRECTORY}/images`
  const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`
- const  todaysDate = new Date()
+ const  todaysDate = new Date().toISOString()
+
 
 
 function GalleryScreen() {
@@ -28,9 +29,28 @@ const [hasImages, setHasImages] = useState(false)
 const [displaying, setDisplaying] = useState(false)
 const navigation = useNavigation();
 const [cleared, setCleared] = useState(false)
+const [written, setWritten] = useState(false)
 
 
-  useEffect(()=>{
+useEffect( ()=>{
+  async function helper (){
+  try{
+    const directory = await FileSystem.readDirectoryAsync(DIRECTORY);
+ console.log('main dir', directory)
+  await Promise.all(
+      directory.map(async(file)=> {
+        const path = `${DIRECTORY}/${file}`
+        return FileSystem.deleteAsync(path )
+        }))
+  } catch(err){
+    console.error(err)
+  }
+  }
+    //  helper()
+}, [])
+
+
+useEffect(()=>{
   async function helper(){
   
   
@@ -40,15 +60,18 @@ const [cleared, setCleared] = useState(false)
       // CHECK IF CURRENT EXHIBITION HAS EXPIRED
         //  this condition means that the contents of the main directory, images and details json file, contain files and exhibition details of a current exhibition
     if(directory.length !== 0 && detailsDir.exists ){
+   
     
             const link = detailsDir["uri"]
             console.log('link', link)
             const text = await FileSystem.readAsStringAsync(link);
             console.log('text', text)
             const parsed = JSON.parse(text);   
-            const currentExhibitionExpireDate = parsed.expireAt
+            const currentExhibitionExpireDate = parsed.expireAt.toString().slice(0, 10)
+            console.log('expireDatefor current TYPE', currentExhibitionExpireDate)
+            console.log('todays date',  todaysDate)
          // check if expire date of a current exhibition equals to today's date, if so, it has expired and contend of the main directory are deleted
-            const expireBoolean = currentExhibitionExpireDate === todaysDate
+            const expireBoolean = currentExhibitionExpireDate === todaysDate.slice(0, 10)
             console.log('expire bool', expireBoolean)
             if(expireBoolean){
                await Promise.all(
@@ -66,27 +89,29 @@ const [cleared, setCleared] = useState(false)
   
     }, [])
   
-  
-    useEffect(() => {
+
+  useEffect(() => {
       async function helper() {
         try {
   
           // read the contents of directories
       
+          console.log('-------------------')
           
           const directory = await FileSystem.readDirectoryAsync(DIRECTORY);
-          const images = await FileSystem.readDirectoryAsync(IMAGES_DIR);
+        
+          const imagesDir = await FileSystem.getInfoAsync(IMAGES_DIR);
   
           const detailsDir = await FileSystem.getInfoAsync(EXHIBITION_DETAILS_FILE)
-         console.log('-------------------')
           console.log('directory',directory)
-             console.log('images',images)
+             console.log('images',imagesDir.isDirectory)
               console.log('details',detailsDir)
           
           //  write images folder to main directory 
           if (currentUser){
-             if (images.length === 0 && !detailsDir.exists || cleared ) {
-           
+             if ( !detailsDir.exists && !imagesDir.isDirectory|| cleared ) {
+             console.log('no details')
+              await FileSystem.makeDirectoryAsync(IMAGES_DIR);
              await writeToDir(IMAGES_DIR, EXHIBITION_DETAILS_FILE);
             
           } else{
@@ -102,7 +127,12 @@ const [cleared, setCleared] = useState(false)
   
   
       helper();
-    }, [cleared]);
+    }, []);
+    console.log(cleared)
+
+  
+  
+  
 
 useEffect(()=>{
 async function handleFetch ()  {
@@ -133,11 +163,11 @@ console.log(details)
     const fetched = await fetchFromDir()
     if (fetched){
      setImages(fetched.images);
-    setDetails(fetched.details)
-    setDisplaying(true)
+     setDetails(fetched.details)
+     setDisplaying(true)
     }
      const businessRef = doc(db, 'businesses', currentUser.uid);
-    await updateDoc(businessRef, { currentlyDisplaying: true });
+     await updateDoc(businessRef, { currentlyDisplaying: true });
 }
 
 

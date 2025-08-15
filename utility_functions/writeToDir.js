@@ -18,14 +18,15 @@ try{
 
 // fetch current exhibition
 const data =  await fetchExhibitionMaterial()
-
+   console.log(data.images)
 
 // write to images folder and exhibition detail json file only if they are empty not to overwrite existing images
- if(images.length === 0){
+ if(images.length === 0 && data){
    const images = data.images
+
    await Promise.all(
     images.map(async (url, index)=>{
-     const path = `${IMAGES_DIR}/image_${index}.jpg`
+     const path = `${IMAGES_DIR}/image_${index}-${Date.now()}.jpg`
         const imageLink = await getDownloadURL(ref(getStorage(), url))
         return FileSystem.downloadAsync(imageLink, path)
     })
