@@ -1,3 +1,5 @@
+
+
 import { useEffect } from 'react';
 
 import { useState } from 'react';
@@ -29,14 +31,13 @@ const [hasImages, setHasImages] = useState(false)
 const [displaying, setDisplaying] = useState(false)
 const navigation = useNavigation();
 const [cleared, setCleared] = useState(false)
-const [written, setWritten] = useState(false)
 
 
 useEffect( ()=>{
   async function helper (){
   try{
     const directory = await FileSystem.readDirectoryAsync(DIRECTORY);
- console.log('main dir', directory)
+ 
   await Promise.all(
       directory.map(async(file)=> {
         const path = `${DIRECTORY}/${file}`
@@ -48,6 +49,7 @@ useEffect( ()=>{
   }
     //  helper()
 }, [])
+
 
 
 useEffect(()=>{
@@ -121,13 +123,13 @@ useEffect(()=>{
           }
          
         } catch (error) {
-          console.error( error);
+          console.error( "Error is", error.message);
         }
       }
   
   
       helper();
-    }, []);
+    }, [cleared]);
     console.log(cleared)
 
   
@@ -377,3 +379,6 @@ flex:1
  paddingVertical: 20
   }
 })
+
+
+

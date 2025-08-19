@@ -9,12 +9,8 @@ import { Platform } from 'react-native';
 
 const Stack = createStackNavigator();
 
-// 
 const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
-const IMAGES_DIR = `${DIRECTORY}/images`
-const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`
-const  todaysDate = new Date()
-// console.log('today', todaysDate)
+
 
 
 export default function App() {

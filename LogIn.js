@@ -47,10 +47,7 @@ import * as FileSystem from 'expo-file-system'
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
     const uid = userCredential.user.uid;
-    const tokenResult = await getIdTokenResult(userCredential.user, /* forceRefresh */ true);
 
-const isArtist = tokenResult.claims.business === true;
-    console.log('user custom claimsu', isArtist)
     uid && setUserLogedIn(true)
 
     const userDoc = await getDoc(doc(db, 'businesses', uid));
@@ -80,7 +77,7 @@ const isArtist = tokenResult.claims.business === true;
   console.log('Is user logeed in?', userLogedIn)
 
   return (
-    <View style={[styles.mainCont, {width:windowW, height:windowH}]}>
+    <View data-testID='login' style={[styles.mainCont, {width:windowW, height:windowH}]}>
    <View style={styles.outterContainer}>
        <View style={styles.container}>
 
