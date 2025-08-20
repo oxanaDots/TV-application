@@ -2,14 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import {REACT_NATIVE_FIREBASE_API_KEY, 
-  REACT_NATIVE_FIREBASE_AUTHDOMAIN, 
-  REACT_NATIVE_FIREBASE_PROJECTID, 
-  REACT_NATIVE_FIREBASE_STORAGE_BUCKET, 
-  REACT_NATIVE_FIREBASE_MESSAGING_SENERID,
-REACT_NATIVE_FIREBASE_APPID,
-REACT_NATIVE_FIREBASE_MEASURMENTID
-} from '@env'
+import Constants from 'expo-constants';
 
 // import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -18,13 +11,13 @@ REACT_NATIVE_FIREBASE_MEASURMENTID
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: REACT_NATIVE_FIREBASE_API_KEY,
-  authDomain: REACT_NATIVE_FIREBASE_AUTHDOMAIN,
-  projectId:REACT_NATIVE_FIREBASE_PROJECTID,
-  storageBucket:REACT_NATIVE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: REACT_NATIVE_FIREBASE_MESSAGING_SENERID,
-  appId: REACT_NATIVE_FIREBASE_APPID,
-  measurementId: REACT_NATIVE_FIREBASE_MEASURMENTID
+  apiKey: Constants.expoConfig.extra.FIREBASE_API_KEY,
+  authDomain: Constants.expoConfig.extra.FIREBASE_AUTHDOMAIN,
+  projectId: Constants.expoConfig.extra.FIREBASE_PROJECTID,
+  storageBucket: Constants.expoConfig.extra.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: Constants.expoConfig.extra.FIREBASE_MESSAGING_SENDERID,
+  appId: Constants.expoConfig.extra.FIREBASE_APPID,
+  measurementId: Constants.expoConfig.extra.FIREBASE_MEASURMENTID,
 };
 
 

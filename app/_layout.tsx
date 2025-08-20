@@ -1,7 +1,7 @@
 // App.js
 import { createStackNavigator } from '@react-navigation/stack';
 import GalleryScreen from '../GalleryScreen';
-import LogIn from '../LogIn';
+import LogIn from '../LogIn.js';
 import { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system'
 import { Platform } from 'react-native';
