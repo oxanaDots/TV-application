@@ -22,11 +22,10 @@
     ],
     "android": {
       "edgeToEdgeEnabled": true,
-     
+
       "package": "com.okssana.ExhibitionTV"
     },
     "ios": {
-     
       "bundleIdentifier": "com.okssana.ExhibitionTV"
     },
     "web": {

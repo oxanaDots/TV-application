@@ -1,173 +1,166 @@
-import { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { signInWithEmailAndPassword, getIdTokenResult } from 'firebase/auth';
-import { getDoc, doc } from 'firebase/firestore';
-import { auth, db } from './firebase';
-import { useNavigation } from '@react-navigation/native';
-import * as FileSystem from 'expo-file-system'
+import { useState, useEffect } from "react";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
+import { signInWithEmailAndPassword, getIdTokenResult } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
+import { auth, db } from "./firebase";
+import { useNavigation } from "@react-navigation/native";
+import * as FileSystem from "expo-file-system";
 
+const DIRECTORY = FileSystem.documentDirectory + "exhibition";
+const IMAGES_DIR = `${DIRECTORY}/images`;
+const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`;
+const todaysDate = new Date();
 
- const DIRECTORY = FileSystem.documentDirectory + 'exhibition'
- const IMAGES_DIR = `${DIRECTORY}/images`
- const EXHIBITION_DETAILS_FILE = `${DIRECTORY}/exhibition_details.json`
- const  todaysDate = new Date()
+function LogIn() {
+  const windowW = Dimensions.get("window").width;
+  const windowH = Dimensions.get("window").height;
+  const [loginDetails, setLoginDetails] = useState({
+    email: "",
+    password: "",
+  });
+  const [userLogedIn, setUserLogedIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigation = useNavigation();
 
-   function LogIn() {
-
-    const windowW= Dimensions.get('window').width
-    const windowH = Dimensions.get('window').height
-    const [loginDetails, setLoginDetails] = useState({
-        email:'',
-        password:''
-    })
-    const [userLogedIn, setUserLogedIn] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
-    const navigation = useNavigation();
-
-    
-
-    function handleChnage(name, value){
-       
-        setLoginDetails((details)=>( {...details, [name]: value}))
-        setErrorMessage('')
-        
-    }
-
-
-
-    async function handleLogIn(){
-    const { email, password } = loginDetails;
-
-  if (!email || !password) {
-    setErrorMessage('Please enter both email and password')
-    return;
+  function handleChnage(name, value) {
+    setLoginDetails((details) => ({ ...details, [name]: value }));
+    setErrorMessage("");
   }
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  async function handleLogIn() {
+    const { email, password } = loginDetails;
 
-    const uid = userCredential.user.uid;
-
-    uid && setUserLogedIn(true)
-
-    const userDoc = await getDoc(doc(db, 'businesses', uid));
-
-    // login is only allowed to enterprises
-    if (userDoc.exists() && userDoc.data().role === 'business' && userCredential.user.emailVerified) {
-      navigation.navigate('Gallery');
-
-      
-
-    } else {
-      setErrorMessage('Access denied. Only business accounts are allowed.');
+    if (!email || !password) {
+      setErrorMessage("Please enter both email and password");
+      return;
     }
-    
-  } catch (error) {
-    console.error('Login error:', error.message);
-  
-  }}
 
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
 
+      const uid = userCredential.user.uid;
 
+      uid && setUserLogedIn(true);
 
+      const userDoc = await getDoc(doc(db, "businesses", uid));
 
+      // login is only allowed to enterprises
+      if (
+        userDoc.exists() &&
+        userDoc.data().role === "business" &&
+        userCredential.user.emailVerified
+      ) {
+        navigation.navigate("Gallery");
+      } else {
+        setErrorMessage("Access denied. Only business accounts are allowed.");
+      }
+    } catch (error) {
+      console.error("Login error:", error.message);
+    }
+  }
 
- 
-
-  console.log('Is user logeed in?', userLogedIn)
+  console.log("Is user logeed in?", userLogedIn);
 
   return (
-    <View data-testID='login' style={[styles.mainCont, {width:windowW, height:windowH}]}>
-   <View style={styles.outterContainer}>
-       <View style={styles.container}>
-
-       <Text style={styles.mainHeader}>Log In</Text>
-       {errorMessage !== '' && <Text testID='error-message' style={styles.errormessage}>{errorMessage}</Text>}
-       <TextInput
-       style={styles.textInput}
-       placeholder='email'
-       value={loginDetails.email}
-       onChangeText={(text)=> handleChnage('email', text)}
-       />
-       <TextInput
-        style={styles.textInput}
-        placeholder='password'
-        value={loginDetails.password}
-        onChangeText={(text)=> handleChnage('password', text)}
-        secureTextEntry={true}
-
-       />
-        <TouchableOpacity testID="submit-btn"   onPress={()=>handleLogIn()} style={styles.button}>
-    <Text style={styles.buttonTxt}>Log In</Text>
-   </TouchableOpacity>
-   </View>
-   </View>
-   </View>
+    <View
+      data-testID="login"
+      style={[styles.mainCont, { width: windowW, height: windowH }]}
+    >
+      <View style={styles.outterContainer}>
+        <View style={styles.container}>
+          <Text style={styles.mainHeader}>Log In</Text>
+          {errorMessage !== "" && (
+            <Text testID="error-message" style={styles.errormessage}>
+              {errorMessage}
+            </Text>
+          )}
+          <TextInput
+            style={styles.textInput}
+            placeholder="email"
+            value={loginDetails.email}
+            onChangeText={(text) => handleChnage("email", text)}
+          />
+          <TextInput
+            style={styles.textInput}
+            placeholder="password"
+            value={loginDetails.password}
+            onChangeText={(text) => handleChnage("password", text)}
+            secureTextEntry={true}
+          />
+          <TouchableOpacity
+            testID="submit-btn"
+            onPress={() => handleLogIn()}
+            style={styles.button}
+          >
+            <Text style={styles.buttonTxt}>Log In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
 
 export default LogIn;
 
 const styles = StyleSheet.create({
-    mainCont:{
-        display:'flex',
-        justifyContent:'center',
-        backgroundColor:'white',
-        alignContent:'center',
-        width: 'full'
-    
-    },
-    container:{
-      
-        display:'flex',
-        width: '30%',
-        alignItems:'center',
-        justifyContent:'center',
-        alignItems:'center',
-       gap: 15,
-      
-       
+  mainCont: {
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "white",
+    alignContent: "center",
+    width: "full",
+  },
+  container: {
+    display: "flex",
+    width: "30%",
+    alignItems: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 15,
+  },
+  outterContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-    },
-    outterContainer:{
+  mainHeader: {
+    fontSize: 30,
+    fontWeight: "700",
+    color: "rgb(46, 16, 101)",
+    paddingBottom: 40,
+  },
+  textInput: {
+    backgroundColor: "rgb(244, 244, 245)",
+    width: "100%",
+    padding: 10,
+    borderRadius: 100,
+  },
+  button: {
+    backgroundColor: "rgb(46, 16, 101)",
+    borderRadius: 100,
 
-      display:'flex',
-      justifyContent:'center',
-      alignItems:'center'
-    },
-
-
-    mainHeader:{
-         fontSize: 30,
-         fontWeight:'700',
-         color:'rgb(46, 16, 101)',
-         paddingBottom: 40,
-
-
-    },
-    textInput:{
-        backgroundColor: 'rgb(244, 244, 245)',
-        width: '100%',
-        padding: 10,
-       borderRadius: 100,
-       
-        
-    },
-    button:{
-        backgroundColor:'rgb(46, 16, 101)',
-         borderRadius: 100,
-        
-        width:'100%',
-       padding: 10
-       
-    },
-    buttonTxt:{
-        color:'white',
-        textAlign:"center",
-        fontWeight:'bold',
-        fontSize:18
-    },
-    errormessage:{
-      color:'red'
-    }
-})
+    width: "100%",
+    padding: 10,
+  },
+  buttonTxt: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  errormessage: {
+    color: "red",
+  },
+});

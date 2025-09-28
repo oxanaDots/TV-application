@@ -1,5 +1,1 @@
-export function cacheDur(){
-
-
-    
-}
+export function cacheDur() {}

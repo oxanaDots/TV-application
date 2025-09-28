@@ -1,15 +1,16 @@
-import 'dotenv/config';
+import "dotenv/config";
 
 export default {
   expo: {
-    name: 'exhibition-tv',
-    slug: 'exhibition-tv',
+    name: "exhibition-tv",
+    slug: "exhibition-tv",
     extra: {
       FIREBASE_API_KEY: process.env.REACT_NATIVE_FIREBASE_API_KEY,
       FIREBASE_AUTHDOMAIN: process.env.REACT_NATIVE_FIREBASE_AUTHDOMAIN,
       FIREBASE_PROJECTID: process.env.REACT_NATIVE_FIREBASE_PROJECTID,
       FIREBASE_STORAGE_BUCKET: process.env.REACT_NATIVE_FIREBASE_STORAGE_BUCKET,
-      FIREBASE_MESSAGING_SENDERID: process.env.REACT_NATIVE_FIREBASE_MESSAGING_SENDERID,
+      FIREBASE_MESSAGING_SENDERID:
+        process.env.REACT_NATIVE_FIREBASE_MESSAGING_SENDERID,
       FIREBASE_APPID: process.env.REACT_NATIVE_FIREBASE_APPID,
       FIREBASE_MEASURMENTID: process.env.REACT_NATIVE_FIREBASE_MEASURMENTID,
     },
